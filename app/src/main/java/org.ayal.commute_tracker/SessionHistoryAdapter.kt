@@ -1,4 +1,4 @@
-package com.commute.tracker
+package org.ayal.commute_tracker
 
 import android.app.AlertDialog
 import android.view.LayoutInflater
@@ -11,7 +11,7 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.commute.tracker.data.TrackingSession
+import org.ayal.commute_tracker.data.TrackingSession
 import kotlinx.coroutines.launch
 
 class SessionHistoryAdapter(

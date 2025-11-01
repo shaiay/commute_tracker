@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.commute.tracker"
+    namespace = "org.ayal.commute_tracker"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.commute.tracker"
+        applicationId = "org.ayal.commute_tracker"
         minSdk = 29
         targetSdk = 34
         versionCode = 1

@@ -1,8 +1,8 @@
-package com.commute.tracker
+package org.ayal.commute_tracker
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
-import com.commute.tracker.data.LocationRepository
+import org.ayal.commute_tracker.data.LocationRepository
 
 class SessionHistoryViewModel(private val repository: LocationRepository) : ViewModel() {
     val sessions = liveData {

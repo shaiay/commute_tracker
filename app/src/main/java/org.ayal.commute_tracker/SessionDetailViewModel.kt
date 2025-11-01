@@ -1,10 +1,10 @@
-package com.commute.tracker
+package corg.ayal.commute_tracker
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
-import com.commute.tracker.data.LocationRepository
-import com.commute.tracker.data.TrackPoint
-import com.commute.tracker.data.TrackingSession
+import org.ayal.commute_tracker.data.LocationRepository
+import org.ayal.commute_tracker.data.TrackPoint
+import org.ayal.commute_tracker.data.TrackingSession
 import kotlinx.coroutines.Dispatchers
 
 class SessionDetailViewModel(private val repository: LocationRepository) : ViewModel() {

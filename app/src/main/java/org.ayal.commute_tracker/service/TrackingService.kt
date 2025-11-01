@@ -1,4 +1,4 @@
-package com.commute.tracker.service
+package org.ayal.commute_tracker.service
 
 import android.annotation.SuppressLint
 import android.app.NotificationChannel

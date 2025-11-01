@@ -1,4 +1,4 @@
-package com.commute.tracker
+package org.ayal.commute_tracker
 
 import android.content.Intent
 import android.net.Uri
@@ -11,9 +11,9 @@ import android.widget.Spinner
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.commute.tracker.R
-import com.commute.tracker.data.TrackPoint
-import com.commute.tracker.data.TrackingSession
+import org.ayal.commute_tracker.R
+import org.ayal.commute_tracker.data.TrackPoint
+import org.ayal.commute_tracker.data.TrackingSession
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat

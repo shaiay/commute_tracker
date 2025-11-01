@@ -1,4 +1,4 @@
-package com.commute.tracker.data
+package org.ayal.commute_tracker.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

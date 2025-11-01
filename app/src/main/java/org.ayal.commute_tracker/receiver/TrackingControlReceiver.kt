@@ -1,4 +1,4 @@
-package com.commute.tracker.receiver
+package org.ayal.commute_tracker.receiver
 
 import android.content.BroadcastReceiver
 import android.content.Context

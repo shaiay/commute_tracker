@@ -1,8 +1,8 @@
-package com.commute.tracker
+package org.ayal.commute_tracker
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.commute.tracker.data.LocationRepository
+import org.ayal.commute_tracker.data.LocationRepository
 
 class SessionHistoryViewModelFactory(private val repository: LocationRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

@@ -1,4 +1,4 @@
-package com.commute.tracker
+package corg.ayal.commute_tracker
 
 import android.Manifest
 import android.content.Intent
@@ -10,8 +10,8 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import com.commute.tracker.service.TrackingService
-import com.commute.tracker.SessionHistoryActivity
+import org.ayal.commute_tracker.service.TrackingService
+import org.ayal.commute_tracker.SessionHistoryActivity
 
 class MainActivity : AppCompatActivity() {
 

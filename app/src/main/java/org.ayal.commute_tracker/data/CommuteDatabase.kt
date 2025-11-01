@@ -1,4 +1,4 @@
-package com.commute.tracker.data
+package org.ayal.commute_tracker.data
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
