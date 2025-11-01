@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Commute Tracker</string>
+    <string-array name="activity_types">
+        <item>Driving</item>
+        <item>Cycling</item>
+        <item>Walking</item>
+        <item>Running</item>
+        <item>Still</item>
+        <item>Tilting</item>
+        <item>Unknown</item>
+    </string-array>
+</resources>
