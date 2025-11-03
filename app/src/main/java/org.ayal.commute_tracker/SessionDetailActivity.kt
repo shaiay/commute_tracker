@@ -11,7 +11,7 @@ import android.widget.Spinner
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
-import org.ayal.commute_tracker.R
+import kotlinx.coroutines.launch
 import org.ayal.commute_tracker.data.TrackPoint
 import org.ayal.commute_tracker.data.TrackingSession
 import java.io.File
@@ -50,12 +50,12 @@ class SessionDetailActivity : AppCompatActivity() {
 
         val sessionId = intent.getLongExtra(EXTRA_SESSION_ID, -1)
         if (sessionId != -1L) {
-            viewModel.getSession(sessionId).observe(this) {
-                session = it
+            viewModel.getSession(sessionId).observe(this) { sessionData ->
+                session = sessionData
                 updateUi()
             }
-            viewModel.getTrackPoints(sessionId).observe(this) {
-                trackPoints = it
+            viewModel.getTrackPoints(sessionId).observe(this) { trackPointsData ->
+                trackPoints = trackPointsData
             }
         }
 
@@ -152,6 +152,6 @@ class SessionDetailActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val EXTRA_SESSION_ID = "com.commute.tracker.SESSION_ID"
+        const val EXTRA_SESSION_ID = "org.ayal.commute_tracker.SESSION_ID"
     }
 }

@@ -3,7 +3,7 @@ package org.ayal.commute_tracker.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.commute.tracker.service.TrackingService
+import org.ayal.commute_tracker.service.TrackingService
 
 class TrackingControlReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {

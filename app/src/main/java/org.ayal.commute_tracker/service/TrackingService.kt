@@ -1,25 +1,28 @@
 package org.ayal.commute_tracker.service
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Build
+import android.os.Looper
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
-import com.commute.tracker.CommuteTrackerApplication
-import com.commute.tracker.MainActivity
-import com.commute.tracker.R
-import com.commute.tracker.data.TrackPoint
-import com.commute.tracker.data.TrackingSession
-import com.commute.tracker.receiver.ActivityRecognitionReceiver
 import com.google.android.gms.location.*
 import kotlinx.coroutines.launch
+import org.ayal.commute_tracker.CommuteTrackerApplication
+import org.ayal.commute_tracker.MainActivity
+import org.ayal.commute_tracker.R
+import org.ayal.commute_tracker.data.TrackPoint
+import org.ayal.commute_tracker.data.TrackingSession
+import org.ayal.commute_tracker.receiver.ActivityRecognitionReceiver
 
 class TrackingService : LifecycleService() {
 
@@ -30,7 +33,7 @@ class TrackingService : LifecycleService() {
 
     private val activityRecognitionPendingIntent by lazy {
         val intent = Intent(this, ActivityRecognitionReceiver::class.java)
-        PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
     }
 
     private var currentSession: TrackingSession? = null
@@ -76,16 +79,14 @@ class TrackingService : LifecycleService() {
         val id = repository.insertSession(session)
         currentSession = session.copy(id = id)
 
-        val locationRequest = LocationRequest.create().apply {
-            interval = 5000
-            fastestInterval = 2000
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        }
+        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000)
+            .setMinUpdateIntervalMillis(2000)
+            .build()
 
         fusedLocationClient.requestLocationUpdates(
             locationRequest,
             locationCallback,
-            mainLooper
+            Looper.getMainLooper()
         )
         activityRecognitionClient.requestActivityUpdates(30000, activityRecognitionPendingIntent)
         startForeground(NOTIFICATION_ID, createNotification())
@@ -94,13 +95,27 @@ class TrackingService : LifecycleService() {
     private suspend fun stopTracking() {
         isTracking.postValue(false)
         fusedLocationClient.removeLocationUpdates(locationCallback)
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACTIVITY_RECOGNITION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
         activityRecognitionClient.removeActivityUpdates(activityRecognitionPendingIntent)
         repository.insertTrackPoints(trackPoints)
         currentSession?.let {
             repository.updateSession(it.copy(endTime = System.currentTimeMillis()))
         }
         repository.groupSimilarSessions()
-        stopForeground(true)
+        stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
 
@@ -126,7 +141,7 @@ class TrackingService : LifecycleService() {
 
     private fun createNotification(): android.app.Notification {
         val notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
@@ -167,8 +182,8 @@ class TrackingService : LifecycleService() {
     companion object {
         val isTracking = MutableLiveData<Boolean>()
         val currentLocation = MutableLiveData<Location>()
-        const val ACTION_START_TRACKING = "com.commute.tracker.START_TRACKING"
-        const val ACTION_STOP_TRACKING = "com.commute.tracker.STOP_TRACKING"
+        const val ACTION_START_TRACKING = "org.ayal.commute_tracker.START_TRACKING"
+        const val ACTION_STOP_TRACKING = "org.ayal.commute_tracker.STOP_TRACKING"
         private const val NOTIFICATION_CHANNEL_ID = "tracking_channel"
         private const val NOTIFICATION_ID = 1
     }

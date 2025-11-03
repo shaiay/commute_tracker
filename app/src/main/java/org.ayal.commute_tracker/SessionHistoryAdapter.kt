@@ -13,10 +13,11 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.ayal.commute_tracker.data.TrackingSession
 import kotlinx.coroutines.launch
+import org.ayal.commute_tracker.data.LocationRepository
 
 class SessionHistoryAdapter(
     private val lifecycleScope: LifecycleCoroutineScope,
-    private val repository: com.commute.tracker.data.LocationRepository
+    private val repository: LocationRepository
 ) :
     ListAdapter<TrackingSession, SessionHistoryAdapter.ViewHolder>(SessionDiffCallback()) {
 

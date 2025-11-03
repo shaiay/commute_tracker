@@ -28,7 +28,9 @@
         <activity android:name=".SessionHistoryActivity" />
         <activity android:name=".SessionDetailActivity" />
 
-        <service android:name=".service.TrackingService" />
+        <service android:name=".service.TrackingService"
+            android:foregroundServiceType="location"
+            />
 
         <receiver
             android:name=".receiver.TrackingControlReceiver"

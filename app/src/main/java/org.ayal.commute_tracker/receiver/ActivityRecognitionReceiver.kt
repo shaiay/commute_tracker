@@ -3,11 +3,12 @@ package org.ayal.commute_tracker.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.commute.tracker.CommuteTrackerApplication
 import com.google.android.gms.location.ActivityRecognitionResult
 import com.google.android.gms.location.DetectedActivity
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.ayal.commute_tracker.CommuteTrackerApplication
 
 class ActivityRecognitionReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -17,10 +18,15 @@ class ActivityRecognitionReceiver : BroadcastReceiver() {
                 val mostProbableActivity = it.mostProbableActivity
                 if (mostProbableActivity.type != DetectedActivity.UNKNOWN && mostProbableActivity.confidence >= 75) {
                     val repository = (context.applicationContext as CommuteTrackerApplication).locationRepository
-                    GlobalScope.launch {
-                        val latestSession = repository.getLatestSession()
-                        latestSession?.let {
-                            repository.updateSession(it.copy(activityType = getActivityString(mostProbableActivity.type)))
+                    val pendingResult = goAsync()
+                    CoroutineScope(Dispatchers.IO).launch {
+                        try {
+                            val latestSession = repository.getLatestSession()
+                            latestSession?.let {
+                                repository.updateSession(it.copy(activityType = getActivityString(mostProbableActivity.type)))
+                            }
+                        } finally {
+                            pendingResult.finish()
                         }
                     }
                 }

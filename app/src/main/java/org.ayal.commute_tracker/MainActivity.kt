@@ -1,9 +1,8 @@
-package corg.ayal.commute_tracker
+package org.ayal.commute_tracker
 
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -11,7 +10,6 @@ import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import org.ayal.commute_tracker.service.TrackingService
-import org.ayal.commute_tracker.SessionHistoryActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -101,14 +99,14 @@ class MainActivity : AppCompatActivity() {
         ) {
             permissionsToRequest.add(Manifest.permission.ACCESS_FINE_LOCATION)
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && ContextCompat.checkSelfPermission(
+        if (true && ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_BACKGROUND_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             permissionsToRequest.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && ContextCompat.checkSelfPermission(
+        if (true && ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACTIVITY_RECOGNITION
             ) != PackageManager.PERMISSION_GRANTED

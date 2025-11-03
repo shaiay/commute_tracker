@@ -3,9 +3,9 @@ package org.ayal.commute_tracker
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import org.ayal.commute_tracker.R
 
 class SessionHistoryActivity : AppCompatActivity() {
 
@@ -20,8 +20,8 @@ class SessionHistoryActivity : AppCompatActivity() {
         val recyclerView = findViewById<RecyclerView>(R.id.sessionsRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        viewModel.sessions.observe(this) { sessions ->
-            recyclerView.adapter = SessionHistoryAdapter(sessions)
+        viewModel.sessions.observe(this) { _ ->
+            recyclerView.adapter = SessionHistoryAdapter(lifecycleScope, (application as CommuteTrackerApplication).locationRepository)
         }
     }
 }

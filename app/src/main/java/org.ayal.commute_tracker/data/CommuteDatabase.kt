@@ -17,9 +17,9 @@ abstract class CommuteDatabase : RoomDatabase() {
 }
 
 val MIGRATION_1_2 = object : Migration(1, 2) {
-    override fun migrate(database: SupportSQLiteDatabase) {
-        database.execSQL("CREATE TABLE `session_groups` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL)")
-        database.execSQL("ALTER TABLE `tracking_sessions` ADD COLUMN `groupId` INTEGER")
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("CREATE TABLE `session_groups` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL)")
+        db.execSQL("ALTER TABLE `tracking_sessions` ADD COLUMN `groupId` INTEGER")
     }
 }
 
