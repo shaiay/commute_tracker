@@ -20,8 +20,11 @@ class SessionHistoryActivity : AppCompatActivity() {
         val recyclerView = findViewById<RecyclerView>(R.id.sessionsRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        viewModel.sessions.observe(this) { _ ->
-            recyclerView.adapter = SessionHistoryAdapter(lifecycleScope, (application as CommuteTrackerApplication).locationRepository)
+        val adapter = SessionHistoryAdapter(lifecycleScope, (application as CommuteTrackerApplication).locationRepository)
+        recyclerView.adapter = adapter
+
+        viewModel.sessions.observe(this) { sessions ->
+            adapter.submitList(sessions)
         }
     }
 }
