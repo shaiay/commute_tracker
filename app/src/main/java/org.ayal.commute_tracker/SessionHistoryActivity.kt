@@ -5,9 +5,11 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import org.ayal.commute_tracker.databinding.ActivitySessionHistoryBinding
 
 class SessionHistoryActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivitySessionHistoryBinding
 
     private val viewModel: SessionHistoryViewModel by viewModels {
         SessionHistoryViewModelFactory((application as CommuteTrackerApplication).locationRepository)
@@ -15,13 +17,13 @@ class SessionHistoryActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_session_history)
+        binding = ActivitySessionHistoryBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val recyclerView = findViewById<RecyclerView>(R.id.sessionsRecyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.sessionsRecyclerView.layoutManager = LinearLayoutManager(this)
 
         val adapter = SessionHistoryAdapter(lifecycleScope, (application as CommuteTrackerApplication).locationRepository)
-        recyclerView.adapter = adapter
+        binding.sessionsRecyclerView.adapter = adapter
 
         viewModel.sessions.observe(this) { sessions ->
             adapter.submitList(sessions)

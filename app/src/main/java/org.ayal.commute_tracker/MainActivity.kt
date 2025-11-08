@@ -6,18 +6,14 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import org.ayal.commute_tracker.databinding.ActivityMainBinding
 import org.ayal.commute_tracker.service.TrackingService
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var speedTextView: TextView
-    private lateinit var bearingTextView: TextView
-    private lateinit var startStopButton: Button
-    private lateinit var historyButton: Button
+    private lateinit var binding: ActivityMainBinding
 
     private var isTracking = false
 
@@ -34,14 +30,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        speedTextView = findViewById(R.id.speedTextView)
-        bearingTextView = findViewById(R.id.bearingTextView)
-        startStopButton = findViewById(R.id.startStopButton)
-        historyButton = findViewById(R.id.historyButton)
-
-        startStopButton.setOnClickListener {
+        binding.startStopButton.setOnClickListener {
             if (isTracking) {
                 stopTracking()
             } else {
@@ -49,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        historyButton.setOnClickListener {
+        binding.historyButton.setOnClickListener {
             startActivity(Intent(this, SessionHistoryActivity::class.java))
         }
 
@@ -64,8 +56,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         TrackingService.currentLocation.observe(this) {
-            speedTextView.text = "Speed: ${it.speed} m/s"
-            bearingTextView.text = "Bearing: ${it.bearing}°"
+            binding.speedTextView.text = "Speed: ${it.speed} m/s"
+            binding.bearingTextView.text = "Bearing: ${it.bearing}°"
         }
     }
 
@@ -85,9 +77,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateUi() {
         if (isTracking) {
-            startStopButton.text = "Stop Tracking"
+            binding.startStopButton.text = "Stop Tracking"
         } else {
-            startStopButton.text = "Start Tracking"
+            binding.startStopButton.text = "Start Tracking"
         }
     }
 
@@ -100,14 +92,21 @@ class MainActivity : AppCompatActivity() {
         ) {
             permissionsToRequest.add(Manifest.permission.ACCESS_FINE_LOCATION)
         }
-        if (true && ContextCompat.checkSelfPermission(
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACCESS_BACKGROUND_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             permissionsToRequest.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
         }
-        if (true && ContextCompat.checkSelfPermission(
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            permissionsToRequest.add(Manifest.permission.POST_NOTIFICATIONS)
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.ACTIVITY_RECOGNITION
             ) != PackageManager.PERMISSION_GRANTED

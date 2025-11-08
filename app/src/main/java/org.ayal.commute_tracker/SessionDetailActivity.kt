@@ -5,15 +5,12 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Spinner
-import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import org.ayal.commute_tracker.data.TrackPoint
 import org.ayal.commute_tracker.data.TrackingSession
+import org.ayal.commute_tracker.databinding.ActivitySessionDetailBinding
 import java.io.File
 import java.io.FileOutputStream
 import java.text.SimpleDateFormat
@@ -21,32 +18,19 @@ import java.util.*
 
 class SessionDetailActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivitySessionDetailBinding
+
     private val viewModel: SessionDetailViewModel by viewModels {
         SessionDetailViewModelFactory((application as CommuteTrackerApplication).locationRepository)
     }
-
-    private lateinit var sessionNameTextView: TextView
-    private lateinit var sessionNameEditText: EditText
-    private lateinit var sessionDetailsTextView: TextView
-    private lateinit var activityTypeSpinner: Spinner
-    private lateinit var exportGpxButton: Button
-    private lateinit var saveNameButton: Button
-    private lateinit var saveActivityButton: Button
 
     private var session: TrackingSession? = null
     private var trackPoints: List<TrackPoint>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_session_detail)
-
-        sessionNameTextView = findViewById(R.id.sessionNameTextView)
-        sessionNameEditText = findViewById(R.id.sessionNameEditText)
-        sessionDetailsTextView = findViewById(R.id.sessionDetailsTextView)
-        activityTypeSpinner = findViewById(R.id.activityTypeSpinner)
-        exportGpxButton = findViewById(R.id.exportGpxButton)
-        saveNameButton = findViewById(R.id.saveNameButton)
-        saveActivityButton = findViewById(R.id.saveActivityButton)
+        binding = ActivitySessionDetailBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val sessionId = intent.getLongExtra(EXTRA_SESSION_ID, -1)
         if (sessionId != -1L) {
@@ -59,22 +43,22 @@ class SessionDetailActivity : AppCompatActivity() {
             }
         }
 
-        exportGpxButton.setOnClickListener {
+        binding.exportGpxButton.setOnClickListener {
             exportGpx()
         }
 
-        saveNameButton.setOnClickListener {
+        binding.saveNameButton.setOnClickListener {
             session?.let {
-                val newName = sessionNameEditText.text.toString()
+                val newName = binding.sessionNameEditText.text.toString()
                 lifecycleScope.launch {
                     (application as CommuteTrackerApplication).locationRepository.updateSession(it.copy(name = newName))
                 }
             }
         }
 
-        saveActivityButton.setOnClickListener {
+        binding.saveActivityButton.setOnClickListener {
             session?.let {
-                val newActivity = activityTypeSpinner.selectedItem.toString()
+                val newActivity = binding.activityTypeSpinner.selectedItem.toString()
                 lifecycleScope.launch {
                     (application as CommuteTrackerApplication).locationRepository.updateSession(it.copy(activityType = newActivity))
                 }
@@ -87,18 +71,18 @@ class SessionDetailActivity : AppCompatActivity() {
             android.R.layout.simple_spinner_item
         )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        activityTypeSpinner.adapter = adapter
+        binding.activityTypeSpinner.adapter = adapter
     }
 
     private fun updateUi() {
         session?.let {
-            sessionNameTextView.text = it.name
-            sessionNameEditText.setText(it.name)
-            sessionDetailsTextView.text = "Activity: ${it.activityType}, Distance: ${it.distance}m"
+            binding.sessionNameTextView.text = it.name
+            binding.sessionNameEditText.setText(it.name)
+            binding.sessionDetailsTextView.text = "Activity: ${it.activityType}, Distance: ${it.distance}m"
             val activityTypes = resources.getStringArray(R.array.activity_types)
             val position = activityTypes.indexOf(it.activityType)
             if (position >= 0) {
-                activityTypeSpinner.setSelection(position)
+                binding.activityTypeSpinner.setSelection(position)
             }
         }
     }

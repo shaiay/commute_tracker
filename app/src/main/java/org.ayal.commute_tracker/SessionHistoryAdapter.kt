@@ -4,16 +4,14 @@ import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import org.ayal.commute_tracker.data.TrackingSession
 import kotlinx.coroutines.launch
 import org.ayal.commute_tracker.data.LocationRepository
+import org.ayal.commute_tracker.data.TrackingSession
+import org.ayal.commute_tracker.databinding.ItemSessionBinding
 
 class SessionHistoryAdapter(
     private val lifecycleScope: LifecycleCoroutineScope,
@@ -21,23 +19,18 @@ class SessionHistoryAdapter(
 ) :
     ListAdapter<TrackingSession, SessionHistoryAdapter.ViewHolder>(SessionDiffCallback()) {
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val sessionNameTextView: TextView = view.findViewById(R.id.sessionNameTextView)
-        val sessionDetailsTextView: TextView = view.findViewById(R.id.sessionDetailsTextView)
-        val renameGroupButton: Button = view.findViewById(R.id.renameGroupButton)
-    }
+    class ViewHolder(val binding: ItemSessionBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_session, parent, false)
-        return ViewHolder(view)
+        val binding = ItemSessionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val session = getItem(position)
-        holder.sessionNameTextView.text = session.name
+        holder.binding.sessionNameTextView.text = session.name
         val groupText = if (session.groupId != null) "Group: ${session.groupId}" else "No Group"
-        holder.sessionDetailsTextView.text = "Activity: ${session.activityType}, Distance: ${session.distance}m, $groupText"
+        holder.binding.sessionDetailsTextView.text = "Activity: ${session.activityType}, Distance: ${session.distance}m, $groupText"
         holder.itemView.setOnClickListener {
             val context = holder.itemView.context
             val intent = android.content.Intent(context, SessionDetailActivity::class.java).apply {
@@ -47,17 +40,17 @@ class SessionHistoryAdapter(
         }
 
         if (session.groupId != null) {
-            holder.renameGroupButton.visibility = View.VISIBLE
-            holder.renameGroupButton.setOnClickListener {
+            holder.binding.renameGroupButton.visibility = View.VISIBLE
+            holder.binding.renameGroupButton.setOnClickListener {
                 val context = holder.itemView.context
-                val editText = EditText(context)
+                val editText = android.widget.EditText(context)
                 AlertDialog.Builder(context)
                     .setTitle("Rename Group")
                     .setView(editText)
                     .setPositiveButton("Save") { _, _ ->
                         val newName = editText.text.toString()
                         lifecycleScope.launch {
-                            val group = repository.getGroup(session.groupId)
+                            val group = repository.getGroup(session.groupId!!)
                             group?.let {
                                 repository.updateGroup(it.copy(name = newName))
                             }
@@ -67,7 +60,7 @@ class SessionHistoryAdapter(
                     .show()
             }
         } else {
-            holder.renameGroupButton.visibility = View.GONE
+            holder.binding.renameGroupButton.visibility = View.GONE
         }
     }
 }
