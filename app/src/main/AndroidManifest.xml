@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="org.ayal.commute_tracker">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"
+        tools:ignore="BackgroundLocationPolicy" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"
+        tools:ignore="ForegroundServicesPolicy" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
 
     <application
         android:name=".CommuteTrackerApplication"
@@ -34,10 +38,11 @@
 
         <receiver
             android:name=".receiver.TrackingControlReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.commute.tracker.START_TRACKING" />
-                <action android:name="com.commute.tracker.STOP_TRACKING" />
+            android:exported="true"
+            tools:ignore="ExportedReceiver">
+        <intent-filter>
+                <action android:name="org.ayal.commute_tracker.START_TRACKING" />
+                <action android:name="org.ayal.commute_tracker.STOP_TRACKING" />
             </intent-filter>
         </receiver>
         <receiver
